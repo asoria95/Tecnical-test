@@ -4,6 +4,7 @@ import com.challenge.account.application.MovementResponse;
 import com.challenge.account.application.MovementService;
 import com.challenge.account.application.RegisterMovementRequest;
 import com.challenge.account.domain.exception.AccountNotFoundException;
+import com.challenge.account.domain.exception.InsufficientBalanceException;
 import com.challenge.account.domain.model.Account;
 import com.challenge.account.domain.model.Movement;
 import com.challenge.account.infrastructure.repository.AccountRepository;
@@ -102,5 +103,34 @@ class MovementServiceTest {
         assertThatThrownBy(() -> movementService.registerDeposit(request))
                 .isInstanceOf(AccountNotFoundException.class)
                 .hasMessageContaining("99");
+    }
+
+    @Test
+    void shouldRegisterWithdrawalAndDecreaseBalance() {
+        Account account = new Account("478758", "Ahorros", new BigDecimal("1000.00"), "customer-1");
+        RegisterMovementRequest request = new RegisterMovementRequest(1L, new BigDecimal("200.00"));
+
+        when(accountRepository.findById(1L)).thenReturn(Optional.of(account));
+        when(accountRepository.save(any(Account.class))).thenReturn(account);
+        when(movementRepository.save(any(Movement.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        MovementResponse response = movementService.registerWithdrawal(request);
+
+        assertThat(response).isNotNull();
+        assertThat(response.movementType()).isEqualTo("Retiro");
+        assertThat(response.amount()).isEqualByComparingTo("-200.00");
+        assertThat(response.balance()).isEqualByComparingTo("800.00");
+    }
+
+    @Test
+    void shouldRejectWithdrawalWhenBalanceIsInsufficient() {
+        Account account = new Account("478758", "Ahorros", new BigDecimal("1000.00"), "customer-1");
+        RegisterMovementRequest request = new RegisterMovementRequest(1L, new BigDecimal("1500.00"));
+
+        when(accountRepository.findById(1L)).thenReturn(Optional.of(account));
+
+        assertThatThrownBy(() -> movementService.registerWithdrawal(request))
+                .isInstanceOf(InsufficientBalanceException.class)
+                .hasMessage("Saldo no disponible");
     }
 }

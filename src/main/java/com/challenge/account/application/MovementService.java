@@ -1,6 +1,7 @@
 package com.challenge.account.application;
 
 import com.challenge.account.domain.exception.AccountNotFoundException;
+import com.challenge.account.domain.exception.InsufficientBalanceException;
 import com.challenge.account.domain.model.Account;
 import com.challenge.account.domain.model.Movement;
 import com.challenge.account.infrastructure.repository.AccountRepository;
@@ -33,6 +34,32 @@ public class MovementService {
         accountRepository.save(account);
 
         Movement movement = new Movement("Deposito", request.amount(), newBalance, account);
+        Movement saved = movementRepository.save(movement);
+
+        return new MovementResponse(
+                saved.getId(),
+                saved.getDate(),
+                saved.getMovementType(),
+                saved.getAmount(),
+                saved.getBalance()
+        );
+    }
+
+    @Transactional
+    public MovementResponse registerWithdrawal(RegisterMovementRequest request) {
+        Account account = accountRepository.findById(request.accountId())
+                .orElseThrow(() -> new AccountNotFoundException(request.accountId()));
+
+        if (account.getBalance().compareTo(request.amount()) < 0) {
+            throw new InsufficientBalanceException();
+        }
+
+        BigDecimal negativeAmount = request.amount().negate();
+        BigDecimal newBalance = account.getBalance().add(negativeAmount);
+        account.setBalance(newBalance);
+        accountRepository.save(account);
+
+        Movement movement = new Movement("Retiro", negativeAmount, newBalance, account);
         Movement saved = movementRepository.save(movement);
 
         return new MovementResponse(
