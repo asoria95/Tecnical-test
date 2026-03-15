@@ -1,37 +1,79 @@
-HELP.md
-.gradle
-build/
-!gradle/wrapper/gradle-wrapper.jar
-!**/src/main/**/build/
-!**/src/test/**/build/
+# -----------------------------------------------------------------------------
+# Multi-microservice repo (Spring Boot) — shared ignores
+# -----------------------------------------------------------------------------
 
-### STS ###
+# Build outputs
+build/
+target/
+out/
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+*.zip
+*.tar.gz
+*.rar
+!gradle/wrapper/gradle-wrapper.jar
+!**/gradle/wrapper/gradle-wrapper.jar
+
+# Gradle
+.gradle/
+**/.gradle/
+
+# IDE - IntelliJ IDEA
+.idea/
+*.iws
+*.iml
+*.ipr
+**/out/
+
+# IDE - Eclipse / STS
 .apt_generated
 .classpath
 .factorypath
 .project
-.settings
+.settings/
 .springBeans
 .sts4-cache
 bin/
-!**/src/main/**/bin/
-!**/src/test/**/bin/
+**/bin/
 
-### IntelliJ IDEA ###
-.idea
-*.iws
-*.iml
-*.ipr
-out/
-!**/src/main/**/out/
-!**/src/test/**/out/
+# IDE - NetBeans
+nbproject/private/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
 
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
+# IDE - VS Code (optional: uncomment if you don't want to track)
+# .vscode/
 
-### VS Code ###
-.vscode/
+# Spring Boot
+HELP.md
+*.log
+logs/
+spring-boot-devtools.properties
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Env and secrets (do not commit)
+.env
+.env.local
+.env.*.local
+*.pem
+application-local.properties
+**/application-local.properties
+**/application-local.yml
+
+# Test / coverage
+**/test-output/
+**/coverage/
+*.exec
+.jacoco/
+
+# Docker (local overrides)
+docker-compose.override.yml
+.docker/
