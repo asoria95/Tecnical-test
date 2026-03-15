@@ -10,5 +10,5 @@ public interface MovementRepository extends JpaRepository<Movement, Long> {
 
     List<Movement> findByAccountId(Long accountId);
 
-    List<Movement> findByAccountCustomerIdAndDateBetween(Long customerId, LocalDateTime from, LocalDateTime to);
+    List<Movement> findByAccountCustomerIdAndDateBetween(String customerId, LocalDateTime from, LocalDateTime to);
 }

@@ -35,7 +35,7 @@ public class Account {
     @Column(nullable = false)
     private Boolean status;
 
-    @Column(name = "customer_id", nullable = false, unique = true)
+    @Column(name = "customer_id", nullable = false)
     private String customerId;
 
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
