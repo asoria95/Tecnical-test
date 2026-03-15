@@ -1,5 +1,7 @@
 package com.challenge.account.application;
 
+import com.challenge.account.domain.exception.DuplicateAccountException;
+import com.challenge.account.domain.model.Account;
 import com.challenge.account.infrastructure.repository.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,6 +17,32 @@ public class AccountService {
     }
 
     public AccountResponse createAccount(CreateAccountRequest request) {
-        throw new UnsupportedOperationException("not implemented yet");
+
+        validateAccountNumber(request.accountNumber());
+
+        Account account = new Account(
+                request.accountNumber(),
+                request.accountType(),
+                request.initialBalance(),
+                request.customerId()
+        );
+
+        Account saved = accountRepository.save(account);
+
+        return new AccountResponse(
+            saved.getId(),
+            saved.getAccountNumber(),
+            saved.getAccountType(),
+            saved.getInitialBalance(),
+            saved.getBalance(),
+            saved.getStatus(),
+            saved.getCustomerId()
+        );
+    }
+
+    private void validateAccountNumber(String accountNumber) {
+        accountRepository.findByAccountNumber(accountNumber).ifPresent(existing -> {
+            throw new DuplicateAccountException(accountNumber);
+        });
     }
 }
