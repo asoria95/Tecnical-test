@@ -1,6 +1,6 @@
 package com.challenge.account.domain.exception;
 
-public class InsufficientBalanceException extends RuntimeException {
+public class InsufficientBalanceException extends BusinessException {
 
     public InsufficientBalanceException() {
         super("Saldo no disponible");
