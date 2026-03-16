@@ -9,11 +9,6 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.util.List;
 
-/**
- * Report endpoint: "Estado de cuenta" by customer and date range.
- * PDF: /reportes?fecha=rango fechas; implemented as clienteId + fechaInicio + fechaFin.
- * Returns JSON list aligned with PDF example (Fecha, Cliente, Numero Cuenta, Tipo, etc.).
- */
 @RestController
 @RequestMapping("/reportes")
 public class ReportController {

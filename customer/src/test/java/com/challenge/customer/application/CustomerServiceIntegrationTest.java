@@ -9,11 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
- * Integration tests for customer creation (TDD Step 1 – failing tests first).
- *
- * Verifies that created customers are persisted correctly and can be retrieved by id.
- */
 @SpringBootTest
 @Transactional
 class CustomerServiceIntegrationTest {

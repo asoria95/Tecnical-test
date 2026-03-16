@@ -6,10 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-/**
- * Person data as per PDF: nombre, genero, edad, identificación, dirección, teléfono.
- * MappedSuperclass: no separate table; columns are on Customer.
- */
 @MappedSuperclass
 @Getter
 @Setter

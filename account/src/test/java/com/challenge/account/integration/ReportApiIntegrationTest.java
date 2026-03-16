@@ -13,10 +13,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-/**
- * Integration tests for GET /reportes (Estado de cuenta).
- * Uses mocked customer-service (BaseIntegrationTest) returning "Test Customer" for clienteId 1.
- */
 class ReportApiIntegrationTest extends BaseIntegrationTest {
 
     @Test

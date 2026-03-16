@@ -12,10 +12,6 @@ import java.io.IOException;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-/**
- * Tests the HTTP boundary: customer-service GET /clientes/{id}.
- * Uses MockWebServer to stub the external service; no mocking inside our code.
- */
 class CustomerServiceClientTest {
 
     private MockWebServer mockWebServer;

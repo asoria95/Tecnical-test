@@ -10,10 +10,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-/**
- * Centralized REST exception handling for customer-service.
- * Maps exceptions to consistent ErrorResponse; never exposes stack traces.
- */
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 

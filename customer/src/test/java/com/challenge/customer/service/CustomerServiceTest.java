@@ -1,5 +1,8 @@
-package com.challenge.customer.application;
+package com.challenge.customer.service;
 
+import com.challenge.customer.application.CreateCustomerCommand;
+import com.challenge.customer.application.CustomerServiceImpl;
+import com.challenge.customer.application.UpdateCustomerCommand;
 import com.challenge.customer.domain.Customer;
 import com.challenge.customer.domain.exception.CustomerNotFoundException;
 import com.challenge.customer.infrastructure.repository.CustomerRepository;

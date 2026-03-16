@@ -10,9 +10,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-/**
- * Cliente (PDF): inherits Person; has clienteid (id), contraseña, estado.
- */
 @Entity
 @Table(name = "customers")
 @Getter

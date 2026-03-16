@@ -1,8 +1,5 @@
 package com.challenge.customer.api;
 
-/**
- * API response for customer; never exposes password.
- */
 public record CustomerResponse(
         Long id,
         String name,
