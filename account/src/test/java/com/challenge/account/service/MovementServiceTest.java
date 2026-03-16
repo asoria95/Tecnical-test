@@ -1,7 +1,8 @@
 package com.challenge.account.service;
 
+import com.challenge.account.application.MovementMapper;
 import com.challenge.account.application.MovementResponse;
-import com.challenge.account.application.MovementService;
+import com.challenge.account.application.MovementServiceImpl;
 import com.challenge.account.application.RegisterMovementRequest;
 import com.challenge.account.domain.exception.AccountNotFoundException;
 import com.challenge.account.domain.exception.InsufficientBalanceException;
@@ -9,6 +10,7 @@ import com.challenge.account.domain.model.Account;
 import com.challenge.account.domain.model.Movement;
 import com.challenge.account.infrastructure.repository.AccountRepository;
 import com.challenge.account.infrastructure.repository.MovementRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -34,8 +36,21 @@ class MovementServiceTest {
     @Mock
     private MovementRepository movementRepository;
 
+    @Mock
+    private MovementMapper movementMapper;
+
     @InjectMocks
-    private MovementService movementService;
+    private MovementServiceImpl movementService;
+
+    @BeforeEach
+    void setUp() {
+        org.mockito.Mockito.lenient()
+                .when(movementMapper.toResponse(any(Movement.class)))
+                .thenAnswer(inv -> {
+                    Movement m = inv.getArgument(0);
+                    return new MovementResponse(m.getId(), m.getDate(), m.getMovementType(), m.getAmount(), m.getBalance());
+                });
+    }
 
     @Test
     void shouldRegisterDepositAndIncreaseBalance() {

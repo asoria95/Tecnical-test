@@ -1,7 +1,8 @@
 package com.challenge.account.service;
 
+import com.challenge.account.application.AccountMapper;
 import com.challenge.account.application.AccountResponse;
-import com.challenge.account.application.AccountService;
+import com.challenge.account.application.AccountServiceImpl;
 import com.challenge.account.application.CreateAccountRequest;
 import com.challenge.account.domain.exception.DuplicateAccountException;
 import com.challenge.account.domain.model.Account;
@@ -28,8 +29,11 @@ class AccountServiceTest {
     @Mock
     private AccountRepository accountRepository;
 
+    @Mock
+    private AccountMapper accountMapper;
+
     @InjectMocks
-    private AccountService accountService;
+    private AccountServiceImpl accountService;
 
     @Test
     void shouldCreateAccountAndReturnCorrectResponse() {
@@ -40,6 +44,9 @@ class AccountServiceTest {
         Account savedAccount = new Account("478758", "Ahorros", new BigDecimal("1000.00"), "customer-1");
         when(accountRepository.findByAccountNumber("478758")).thenReturn(Optional.empty());
         when(accountRepository.save(any(Account.class))).thenReturn(savedAccount);
+        when(accountMapper.toResponse(any(Account.class))).thenReturn(
+                new AccountResponse(1L, "478758", "Ahorros", new BigDecimal("1000.00"), new BigDecimal("1000.00"), true, "customer-1")
+        );
 
         AccountResponse response = accountService.createAccount(request);
 

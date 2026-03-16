@@ -6,7 +6,7 @@ plugins {
 
 group = 'com.challenge'
 version = '0.0.1-SNAPSHOT'
-description = 'Account microservice'
+description = 'Customer microservice'
 
 java {
 	toolchain {
