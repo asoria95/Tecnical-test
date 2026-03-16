@@ -24,7 +24,15 @@ public class CustomerController {
 
     @PostMapping
     public ResponseEntity<CustomerResponse> create(@RequestBody @Valid CreateCustomerRequest request) {
-        CreateCustomerCommand command = new CreateCustomerCommand(request.name(), request.identification());
+        CreateCustomerCommand command = new CreateCustomerCommand(
+                request.name(),
+                request.gender(),
+                request.age(),
+                request.identification(),
+                request.address(),
+                request.phone(),
+                request.password()
+        );
         var customer = customerService.create(command);
         var response = customerMapper.toResponse(customer);
         var location = ServletUriComponentsBuilder
@@ -42,7 +50,17 @@ public class CustomerController {
 
     @PutMapping("/{id}")
     public CustomerResponse update(@PathVariable Long id, @RequestBody @Valid UpdateCustomerRequest request) {
-        UpdateCustomerCommand command = new UpdateCustomerCommand(id, request.name(), request.identification());
+        UpdateCustomerCommand command = new UpdateCustomerCommand(
+                id,
+                request.name(),
+                request.gender(),
+                request.age(),
+                request.identification(),
+                request.address(),
+                request.phone(),
+                request.password(),
+                request.status()
+        );
         return customerMapper.toResponse(customerService.update(command));
     }
 

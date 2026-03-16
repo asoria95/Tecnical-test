@@ -30,8 +30,8 @@ class CustomerServiceTest {
 
     @Test
     void shouldCreateCustomerWithMinimumDataAndReturnSavedCustomer() {
-        CreateCustomerCommand command = new CreateCustomerCommand("John Doe", "12345678");
-        Customer savedCustomer = new Customer("John Doe", "12345678", "ACTIVE");
+        CreateCustomerCommand command = new CreateCustomerCommand("John Doe", null, null, "12345678", null, null, "secret");
+        Customer savedCustomer = new Customer("John Doe", null, null, "12345678", null, null, "secret", "ACTIVE");
         savedCustomer.setId(1L);
 
         when(customerRepository.save(any(Customer.class))).thenReturn(savedCustomer);
@@ -49,13 +49,14 @@ class CustomerServiceTest {
         Customer passedToRepository = captor.getValue();
         assertThat(passedToRepository.getName()).isEqualTo("John Doe");
         assertThat(passedToRepository.getIdentification()).isEqualTo("12345678");
+        assertThat(passedToRepository.getPassword()).isEqualTo("secret");
         assertThat(passedToRepository.getStatus()).isEqualTo("ACTIVE");
     }
 
     @Test
     void shouldReturnCustomerWhenFoundById() {
         Long customerId = 1L;
-        Customer existingCustomer = new Customer("Jane Doe", "87654321", "ACTIVE");
+        Customer existingCustomer = new Customer("Jane Doe", null, null, "87654321", null, null, "pwd", "ACTIVE");
         existingCustomer.setId(customerId);
 
         when(customerRepository.findById(customerId)).thenReturn(Optional.of(existingCustomer));
@@ -85,13 +86,13 @@ class CustomerServiceTest {
     @Test
     void shouldUpdateExistingCustomerWithNewNameAndIdentification() {
         Long customerId = 1L;
-        Customer existingCustomer = new Customer("Jane Doe", "87654321", "ACTIVE");
+        Customer existingCustomer = new Customer("Jane Doe", null, null, "87654321", null, null, "pwd", "ACTIVE");
         existingCustomer.setId(customerId);
 
         when(customerRepository.findById(customerId)).thenReturn(Optional.of(existingCustomer));
         when(customerRepository.save(any(Customer.class))).thenAnswer(inv -> inv.getArgument(0));
 
-        UpdateCustomerCommand command = new UpdateCustomerCommand(customerId, "Jane Updated", "11111111");
+        UpdateCustomerCommand command = new UpdateCustomerCommand(customerId, "Jane Updated", null, null, "11111111", null, null, null, null);
         Customer result = customerService.update(command);
 
         assertThat(result).isNotNull();
@@ -111,13 +112,13 @@ class CustomerServiceTest {
     @Test
     void shouldPreserveStatusWhenUpdatingCustomerNameAndIdentification() {
         Long customerId = 2L;
-        Customer existingCustomer = new Customer("John Smith", "55555555", "INACTIVE");
+        Customer existingCustomer = new Customer("John Smith", null, null, "55555555", null, null, "pwd", "INACTIVE");
         existingCustomer.setId(customerId);
 
         when(customerRepository.findById(customerId)).thenReturn(Optional.of(existingCustomer));
         when(customerRepository.save(any(Customer.class))).thenAnswer(inv -> inv.getArgument(0));
 
-        UpdateCustomerCommand command = new UpdateCustomerCommand(customerId, "John Updated", "66666666");
+        UpdateCustomerCommand command = new UpdateCustomerCommand(customerId, "John Updated", null, null, "66666666", null, null, null, null);
         Customer result = customerService.update(command);
 
         assertThat(result.getStatus()).isEqualTo("INACTIVE");
@@ -132,7 +133,7 @@ class CustomerServiceTest {
         Long nonExistentId = 999L;
         when(customerRepository.findById(nonExistentId)).thenReturn(Optional.empty());
 
-        UpdateCustomerCommand command = new UpdateCustomerCommand(nonExistentId, "Any Name", "00000000");
+        UpdateCustomerCommand command = new UpdateCustomerCommand(nonExistentId, "Any Name", null, null, "00000000", null, null, null, null);
 
         assertThatThrownBy(() -> customerService.update(command))
                 .isInstanceOf(CustomerNotFoundException.class)
@@ -146,7 +147,7 @@ class CustomerServiceTest {
     @Test
     void shouldDeleteExistingCustomerWhenFound() {
         Long customerId = 1L;
-        Customer existingCustomer = new Customer("Jane Doe", "87654321", "ACTIVE");
+        Customer existingCustomer = new Customer("Jane Doe", null, null, "87654321", null, null, "pwd", "ACTIVE");
         existingCustomer.setId(customerId);
 
         when(customerRepository.findById(customerId)).thenReturn(Optional.of(existingCustomer));

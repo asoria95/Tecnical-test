@@ -18,7 +18,16 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     @Transactional
     public Customer create(CreateCustomerCommand command) {
-        Customer customer = new Customer(command.name(), command.identification(), "ACTIVE");
+        Customer customer = new Customer(
+                command.name(),
+                command.gender(),
+                command.age(),
+                command.identification(),
+                command.address(),
+                command.phone(),
+                command.password(),
+                "ACTIVE"
+        );
         return customerRepository.save(customer);
     }
 
@@ -34,7 +43,17 @@ public class CustomerServiceImpl implements CustomerService {
         Customer existing = customerRepository.findById(command.customerId())
                 .orElseThrow(() -> new CustomerNotFoundException(command.customerId()));
         existing.setName(command.name());
+        existing.setGender(command.gender());
+        existing.setAge(command.age());
         existing.setIdentification(command.identification());
+        existing.setAddress(command.address());
+        existing.setPhone(command.phone());
+        if (command.password() != null && !command.password().isBlank()) {
+            existing.setPassword(command.password());
+        }
+        if (command.status() != null && !command.status().isBlank()) {
+            existing.setStatus(command.status());
+        }
         return customerRepository.save(existing);
     }
 

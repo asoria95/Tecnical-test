@@ -11,7 +11,11 @@ public class CustomerMapper {
         return new CustomerResponse(
                 customer.getId(),
                 customer.getName(),
+                customer.getGender(),
+                customer.getAge(),
                 customer.getIdentification(),
+                customer.getAddress(),
+                customer.getPhone(),
                 customer.getStatus()
         );
     }

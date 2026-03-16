@@ -2,6 +2,7 @@ package com.challenge.account.api;
 
 import com.challenge.account.domain.exception.AccountNotFoundException;
 import com.challenge.account.domain.exception.BusinessException;
+import com.challenge.account.domain.exception.CustomerNotFoundException;
 import com.challenge.account.domain.exception.DuplicateAccountException;
 import com.challenge.account.domain.exception.InsufficientBalanceException;
 import com.challenge.account.domain.exception.InvalidAmountException;
@@ -30,6 +31,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(AccountNotFoundException.class)
     public ResponseEntity<ErrorResponse> handle(AccountNotFoundException ex) {
+        return buildResponse(HttpStatus.NOT_FOUND, ex.getMessage());
+    }
+
+    @ExceptionHandler(CustomerNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handle(CustomerNotFoundException ex) {
         return buildResponse(HttpStatus.NOT_FOUND, ex.getMessage());
     }
 

@@ -26,7 +26,7 @@ class CustomerServiceIntegrationTest {
 
     @Test
     void shouldPersistCustomerWhenCreated() {
-        CreateCustomerCommand command = new CreateCustomerCommand("Integration User", "ID-999");
+        CreateCustomerCommand command = new CreateCustomerCommand("Integration User", null, null, "ID-999", null, null, "password");
 
         Customer created = customerService.create(command);
 
