@@ -10,5 +10,5 @@ public record CreateAccountRequest(
         @NotBlank String accountNumber,
         @NotBlank String accountType,
         @NotNull @DecimalMin("0.00") BigDecimal initialBalance,
-        @NotBlank String customerId
+        @NotBlank String customerName
 ) {}

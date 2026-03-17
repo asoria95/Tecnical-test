@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/clientes")
 public class CustomerController {
@@ -41,6 +43,18 @@ public class CustomerController {
                 .buildAndExpand(customer.getId())
                 .toUri();
         return ResponseEntity.created(location).body(response);
+    }
+
+    @GetMapping
+    public List<CustomerResponse> getAll() {
+        return customerService.getAll().stream()
+                .map(customerMapper::toResponse)
+                .toList();
+    }
+
+    @GetMapping("/buscar")
+    public CustomerResponse findByName(@RequestParam String nombre) {
+        return customerMapper.toResponse(customerService.findByName(nombre));
     }
 
     @GetMapping("/{id}")

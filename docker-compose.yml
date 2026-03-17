@@ -1,5 +1,5 @@
-# Local development databases for the banking challenge microservices.
-# Start: docker compose up -d
+# Full stack deployment for the banking challenge microservices.
+# Start: docker compose up --build
 # Stop:  docker compose down
 
 services:
@@ -17,6 +17,8 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+    volumes:
+      - customer-db-data:/var/lib/postgresql/data
 
   account-db:
     image: postgres:16-alpine
@@ -32,3 +34,21 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+    volumes:
+      - account-db-data:/var/lib/postgresql/data
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      PGADMIN_DEFAULT_PASSWORD: password
+    ports:
+      - "5050:80"
+    depends_on:
+      - customer-db
+      - account-db
+
+volumes:
+  customer-db-data:
+  account-db-data:

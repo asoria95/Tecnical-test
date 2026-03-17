@@ -25,4 +25,10 @@ public class CustomerExistenceAdapter implements CustomerExistencePort {
         CustomerData data = customerServiceClient.getById(customerId);
         return new CustomerDisplayData(data.id(), data.name());
     }
+
+    @Override
+    public CustomerDisplayData findByName(String name) {
+        CustomerData data = customerServiceClient.getByName(name);
+        return new CustomerDisplayData(data.id(), data.name());
+    }
 }

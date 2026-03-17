@@ -2,9 +2,12 @@ package com.challenge.customer.application;
 
 import com.challenge.customer.domain.Customer;
 import com.challenge.customer.domain.exception.CustomerNotFoundException;
+import com.challenge.customer.domain.exception.MultipleCustomersFoundException;
 import com.challenge.customer.infrastructure.repository.CustomerRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 public class CustomerServiceImpl implements CustomerService {
@@ -32,9 +35,26 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
+    public List<Customer> getAll() {
+        return customerRepository.findAll();
+    }
+
+    @Override
     public Customer getById(Long id) {
         return customerRepository.findById(id)
                 .orElseThrow(() -> new CustomerNotFoundException(id));
+    }
+
+    @Override
+    public Customer findByName(String name) {
+        List<Customer> matches = customerRepository.findByName(name);
+        if (matches.isEmpty()) {
+            throw new CustomerNotFoundException("Customer not found with name: " + name);
+        }
+        if (matches.size() > 1) {
+            throw new MultipleCustomersFoundException(name);
+        }
+        return matches.get(0);
     }
 
     @Override

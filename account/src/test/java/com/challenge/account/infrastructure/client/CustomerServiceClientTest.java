@@ -54,4 +54,30 @@ class CustomerServiceClientTest {
                 .isInstanceOf(CustomerNotFoundException.class)
                 .hasMessageContaining("999");
     }
+
+    @Test
+    void getByName_returnsCustomerDataWhenCustomerServiceReturns200() throws Exception {
+        String json = """
+                {"id": 1, "name": "Jose Lema", "status": "ACTIVE"}
+                """;
+        mockWebServer.enqueue(new MockResponse()
+                .setResponseCode(200)
+                .setBody(json)
+                .addHeader("Content-Type", "application/json"));
+
+        CustomerData result = client.getByName("Jose Lema");
+
+        assertThat(result.id()).isEqualTo(1L);
+        assertThat(result.name()).isEqualTo("Jose Lema");
+        assertThat(result.status()).isEqualTo("ACTIVE");
+    }
+
+    @Test
+    void getByName_throwsCustomerNotFoundExceptionWhenCustomerServiceReturns404() {
+        mockWebServer.enqueue(new MockResponse().setResponseCode(404));
+
+        assertThatThrownBy(() -> client.getByName("Unknown Name"))
+                .isInstanceOf(CustomerNotFoundException.class)
+                .hasMessageContaining("Unknown Name");
+    }
 }

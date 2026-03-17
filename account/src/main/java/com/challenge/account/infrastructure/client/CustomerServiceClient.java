@@ -31,4 +31,18 @@ public class CustomerServiceClient {
                 })
                 .body(CustomerData.class);
     }
+
+    public CustomerData getByName(String name) {
+        return restClient.get()
+                .uri(uriBuilder -> uriBuilder.path("/clientes/buscar").queryParam("nombre", name).build())
+                .retrieve()
+                .onStatus(HttpStatusCode::is4xxClientError, (request, response) -> {
+                    if (response.getStatusCode().value() == 404) {
+                        throw new CustomerNotFoundException("Customer not found with name: " + name);
+                    }
+                    throw new IllegalStateException(
+                            "Customer service returned " + response.getStatusCode());
+                })
+                .body(CustomerData.class);
+    }
 }

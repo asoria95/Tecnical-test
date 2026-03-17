@@ -4,6 +4,7 @@ import com.challenge.account.application.AccountMapper;
 import com.challenge.account.application.AccountResponse;
 import com.challenge.account.application.AccountServiceImpl;
 import com.challenge.account.application.CreateAccountRequest;
+import com.challenge.account.application.CustomerDisplayData;
 import com.challenge.account.application.CustomerExistencePort;
 import com.challenge.account.domain.exception.CustomerNotFoundException;
 import com.challenge.account.domain.exception.DuplicateAccountException;
@@ -22,9 +23,8 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class AccountServiceTest {
@@ -44,8 +44,11 @@ class AccountServiceTest {
     @Test
     void shouldCreateAccountAndReturnCorrectResponse() {
         CreateAccountRequest request = new CreateAccountRequest(
-                "478758", "Ahorros", new BigDecimal("1000.00"), "1"
+                "478758", "Ahorros", new BigDecimal("1000.00"), "Jose Lema"
         );
+
+        when(customerExistencePort.findByName("Jose Lema"))
+                .thenReturn(new CustomerDisplayData(1L, "Jose Lema"));
 
         Account savedAccount = new Account("478758", "Ahorros", new BigDecimal("1000.00"), "1");
         when(accountRepository.findByAccountNumber("478758")).thenReturn(Optional.empty());
@@ -56,7 +59,7 @@ class AccountServiceTest {
 
         AccountResponse response = accountService.createAccount(request);
 
-        verify(customerExistencePort).validateExists(1L);
+        verify(customerExistencePort).findByName("Jose Lema");
         ArgumentCaptor<Account> captor = ArgumentCaptor.forClass(Account.class);
         verify(accountRepository).save(captor.capture());
 
@@ -78,33 +81,25 @@ class AccountServiceTest {
     @Test
     void shouldRejectAccountCreationWhenCustomerNotFound() {
         CreateAccountRequest request = new CreateAccountRequest(
-                "478758", "Ahorros", new BigDecimal("1000.00"), "999"
+                "478758", "Ahorros", new BigDecimal("1000.00"), "Unknown Name"
         );
 
-        doThrow(new CustomerNotFoundException(999L)).when(customerExistencePort).validateExists(999L);
+        when(customerExistencePort.findByName("Unknown Name"))
+                .thenThrow(new CustomerNotFoundException("Customer not found with name: Unknown Name"));
 
         assertThatThrownBy(() -> accountService.createAccount(request))
                 .isInstanceOf(CustomerNotFoundException.class)
-                .hasMessageContaining("999");
-    }
-
-    @Test
-    void shouldRejectAccountCreationWhenCustomerIdInvalid() {
-        CreateAccountRequest request = new CreateAccountRequest(
-                "478758", "Ahorros", new BigDecimal("1000.00"), "not-a-number"
-        );
-
-        assertThatThrownBy(() -> accountService.createAccount(request))
-                .isInstanceOf(CustomerNotFoundException.class)
-                .hasMessageContaining("Invalid customer id");
+                .hasMessageContaining("Unknown Name");
     }
 
     @Test
     void shouldRejectAccountCreationWhenAccountNumberAlreadyExists() {
         CreateAccountRequest request = new CreateAccountRequest(
-                "478758", "Ahorros", new BigDecimal("1000.00"), "1"
+                "478758", "Ahorros", new BigDecimal("1000.00"), "Jose Lema"
         );
 
+        when(customerExistencePort.findByName("Jose Lema"))
+                .thenReturn(new CustomerDisplayData(1L, "Jose Lema"));
         when(accountRepository.findByAccountNumber("478758"))
                 .thenReturn(Optional.of(new Account("478758", "Ahorros", new BigDecimal("500.00"), "99")));
 

@@ -1,7 +1,6 @@
 package com.challenge.account.application;
 
 import com.challenge.account.domain.exception.AccountNotFoundException;
-import com.challenge.account.domain.exception.CustomerNotFoundException;
 import com.challenge.account.domain.exception.DuplicateAccountException;
 import com.challenge.account.domain.model.Account;
 import com.challenge.account.infrastructure.repository.AccountRepository;
@@ -28,8 +27,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public AccountResponse createAccount(CreateAccountRequest request) {
-        Long customerId = parseCustomerId(request.customerId());
-        customerExistencePort.validateExists(customerId);
+        CustomerDisplayData customer = customerExistencePort.findByName(request.customerName());
 
         validateAccountNumber(request.accountNumber());
 
@@ -37,7 +35,7 @@ public class AccountServiceImpl implements AccountService {
                 request.accountNumber(),
                 request.accountType(),
                 request.initialBalance(),
-                request.customerId()
+                String.valueOf(customer.id())
         );
 
         return accountMapper.toResponse(accountRepository.save(account));
@@ -78,14 +76,6 @@ public class AccountServiceImpl implements AccountService {
             throw new AccountNotFoundException(id);
         }
         accountRepository.deleteById(id);
-    }
-
-    private Long parseCustomerId(String customerId) {
-        try {
-            return Long.parseLong(customerId);
-        } catch (NumberFormatException e) {
-            throw new CustomerNotFoundException("Invalid customer id: " + customerId);
-        }
     }
 
     private void validateAccountNumber(String accountNumber) {

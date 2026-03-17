@@ -73,7 +73,7 @@ class AccountCreationCustomerServiceIntegrationTest {
                 .addHeader("Content-Type", "application/json"));
 
         CreateAccountRequest request = new CreateAccountRequest(
-                "478758", "Ahorros", new BigDecimal("1000.00"), "1"
+                "478758", "Ahorros", new BigDecimal("1000.00"), "Marianela Montalvo"
         );
 
         mockMvc.perform(post("/cuentas")

@@ -57,4 +57,26 @@ class CustomerExistenceAdapterTest {
         assertThat(result.name()).isEqualTo("Marianela Montalvo");
         verify(customerServiceClient).getById(customerId);
     }
+
+    @Test
+    void findByName_returnsCustomerDisplayDataMappedFromClient() {
+        when(customerServiceClient.getByName("Marianela Montalvo"))
+                .thenReturn(new CustomerData(2L, "Marianela Montalvo", "ACTIVE"));
+
+        var result = customerExistenceAdapter.findByName("Marianela Montalvo");
+
+        assertThat(result.id()).isEqualTo(2L);
+        assertThat(result.name()).isEqualTo("Marianela Montalvo");
+        verify(customerServiceClient).getByName("Marianela Montalvo");
+    }
+
+    @Test
+    void findByName_throwsWhenCustomerServiceReturnsNotFound() {
+        when(customerServiceClient.getByName("Unknown"))
+                .thenThrow(new CustomerNotFoundException("Customer not found with name: Unknown"));
+
+        assertThatThrownBy(() -> customerExistenceAdapter.findByName("Unknown"))
+                .isInstanceOf(CustomerNotFoundException.class)
+                .hasMessageContaining("Unknown");
+    }
 }

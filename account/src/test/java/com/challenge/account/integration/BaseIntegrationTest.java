@@ -21,6 +21,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.math.BigDecimal;
 
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -40,6 +41,7 @@ abstract class BaseIntegrationTest {
             CustomerExistencePort port = mock(CustomerExistencePort.class);
             doNothing().when(port).validateExists(anyLong());
             when(port.getById(anyLong())).thenReturn(new CustomerDisplayData(1L, "Test Customer"));
+            when(port.findByName(anyString())).thenReturn(new CustomerDisplayData(1L, "Test Customer"));
             return port;
         }
     }
@@ -58,7 +60,7 @@ abstract class BaseIntegrationTest {
 
     protected Long createAccountAndGetId(String accountNumber, String initialBalance) throws Exception {
         CreateAccountRequest request = new CreateAccountRequest(
-                accountNumber, "Ahorros", new BigDecimal(initialBalance), "1"
+                accountNumber, "Ahorros", new BigDecimal(initialBalance), "Test Customer"
         );
 
         String response = mockMvc.perform(post("/cuentas")

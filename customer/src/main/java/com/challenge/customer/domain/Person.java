@@ -1,6 +1,9 @@
 package com.challenge.customer.domain;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,6 +14,11 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public abstract class Person {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "clienteid")
+    private Long id;
 
     @Column(name = "nombre", nullable = false)
     private String name;

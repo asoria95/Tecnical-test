@@ -7,4 +7,6 @@ public interface CustomerExistencePort {
     void validateExists(Long customerId) throws CustomerNotFoundException;
 
     CustomerDisplayData getById(Long customerId) throws CustomerNotFoundException;
+
+    CustomerDisplayData findByName(String name) throws CustomerNotFoundException;
 }
