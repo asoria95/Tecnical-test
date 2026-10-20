@@ -1,0 +1,55 @@
+---
+description: Guardrails to maximize senior-level evaluation score
+globs:
+  - "**/*.java"
+  - "**/*.md"
+  - "**/*.sql"
+  - "**/Dockerfile"
+alwaysApply: true
+---
+
+# Main goal
+Optimize for senior-level evaluation score, production-readiness, and technical interview defensibility.
+
+# Always optimize for
+- clean code
+- architecture clarity
+- strong object-oriented design
+- API correctness
+- transactional consistency
+- resilient business logic
+- meaningful tests
+- containerized execution
+- clear documentation
+
+# Challenge-specific rules
+The solution must support:
+- CRUD for /clientes
+- CRUD for /cuentas
+- CRUD for /movimientos
+- positive and negative movement values
+- balance updates after each movement
+- transaction history
+- exact insufficient balance message: "Saldo no disponible"
+- report endpoint returning JSON
+- unit test(s)
+- integration test(s)
+- Docker deployment
+
+# Decision heuristic
+When there are multiple valid options, choose the one that is:
+1. simpler
+2. cleaner
+3. easier to test
+4. easier to explain
+5. more aligned with the challenge requirements
+
+# Documentation expectations
+README must explain:
+- architecture decisions
+- microservice boundaries
+- async communication design
+- how to run locally
+- how to run tests
+- how to run with Docker
+- tradeoffs and assumptions

@@ -1,0 +1,70 @@
+---
+description: Senior architecture rules for the Java Spring Boot technical challenge
+globs:
+  - "**/*.java"
+  - "**/*.yml"
+  - "**/*.yaml"
+  - "**/Dockerfile"
+  - "**/docker-compose.yml"
+alwaysApply: true
+---
+
+# Objective
+Implement a senior-level solution for a Java Spring Boot technical challenge using two microservices, asynchronous communication, strong domain modeling, testability, and interview-defensible design.
+
+# Mandatory architecture
+Use two microservices from the beginning:
+
+1. customer-service
+   - person
+   - customer
+
+2. account-service
+   - account
+   - movement
+   - report
+
+Use simple hexagonal architecture inside each microservice.
+
+# Required internal structure
+Organize each microservice using package-by-feature with these boundaries:
+- api
+- application
+- domain
+- infrastructure
+
+# Rules
+- Keep controllers thin.
+- Put business rules in application/domain layers.
+- Do not expose JPA entities directly in API responses.
+- Use DTOs for request/response models.
+- Define clear inbound and outbound ports where useful.
+- Keep persistence details inside infrastructure.
+- Use explicit transaction boundaries for balance-changing operations.
+- Prefer simple, production-like decisions over academic over-engineering.
+
+# Asynchronous integration
+Model asynchronous communication between microservices clearly.
+Prefer RabbitMQ unless there is a strong reason to use Kafka.
+Use integration events such as:
+- CustomerCreatedEvent
+- CustomerUpdatedEvent
+- CustomerStatusChangedEvent
+
+# Senior-level expectations
+Code should demonstrate:
+- strong object-oriented design
+- clean code
+- clear architectural boundaries
+- low coupling
+- high cohesion
+- testability
+- resilience-aware design
+- scalability-aware decisions
+
+# Avoid
+- monolithic package-by-layer structure
+- business logic in controllers
+- leaking persistence concerns into API contracts
+- unnecessary abstractions without a clear payoff
+- fake microservices living in the same runtime without clear service boundaries

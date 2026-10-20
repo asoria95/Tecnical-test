@@ -1,0 +1,55 @@
+---
+description: TDD-first workflow for business-critical behavior
+globs:
+  - "**/*.java"
+alwaysApply: true
+---
+
+# Development approach
+Use pragmatic TDD for all business-critical functionality.
+
+# Mandatory TDD cycle
+For each important use case:
+1. Write a failing test first
+2. Implement the minimum production code required to pass
+3. Refactor while keeping tests green
+
+# Prioritize TDD for
+- customer creation
+- account creation
+- deposit registration
+- withdrawal registration
+- insufficient balance rejection
+- report generation by customer and date range
+- exception handling for business failures
+- event publishing and event consumption behavior
+
+# Testing priorities
+Write tests first for:
+- domain behavior
+- application services / use cases
+- balance update rules
+- transaction recording
+- insufficient balance scenario
+
+Then add:
+- controller/web tests
+- repository integration tests where valuable
+- at least one full integration test per microservice
+
+# Principles
+- Test behavior, not framework internals
+- Keep test names explicit and business-oriented
+- Use builders or fixtures for repeated setup
+- Keep tests deterministic and readable
+- Avoid over-mocking
+- Do not write superficial tests just to increase count
+
+# Refactoring rule
+Refactor only after tests pass.
+Any refactor must improve one or more of:
+- readability
+- duplication reduction
+- naming
+- cohesion
+- boundary clarity
