@@ -1,53 +1,83 @@
 # Full stack deployment for the banking challenge microservices.
-# Start: docker compose up --build
-# Stop:  docker compose down
+# Works identically on local dev and on the AWS EC2 instance.
+#
+# Start:    docker compose up --build
+# Start bg: docker compose up --build -d
+# Stop:     docker compose down
+# Wipe DBs: docker compose down -v
 
 services:
+
+  # ── Databases ────────────────────────────────────────────────────────────────
+
   customer-db:
     image: postgres:16-alpine
     container_name: customer-db
     environment:
       POSTGRES_DB: customerdb
-      POSTGRES_USER: customer
-      POSTGRES_PASSWORD: customer
+      POSTGRES_USER: ${CUSTOMER_DB_USER:-customer}
+      POSTGRES_PASSWORD: ${CUSTOMER_DB_PASSWORD:-customer}
     ports:
       - "5432:5432"
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U customer -d customerdb"]
+      test: ["CMD-SHELL", "pg_isready -U ${CUSTOMER_DB_USER:-customer} -d customerdb"]
       interval: 5s
       timeout: 5s
-      retries: 5
+      retries: 10
     volumes:
       - customer-db-data:/var/lib/postgresql/data
+    restart: unless-stopped
 
   account-db:
     image: postgres:16-alpine
     container_name: account-db
     environment:
       POSTGRES_DB: accountdb
-      POSTGRES_USER: account
-      POSTGRES_PASSWORD: account
+      POSTGRES_USER: ${ACCOUNT_DB_USER:-account}
+      POSTGRES_PASSWORD: ${ACCOUNT_DB_PASSWORD:-account}
     ports:
       - "5433:5432"
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U account -d accountdb"]
+      test: ["CMD-SHELL", "pg_isready -U ${ACCOUNT_DB_USER:-account} -d accountdb"]
       interval: 5s
       timeout: 5s
-      retries: 5
+      retries: 10
     volumes:
       - account-db-data:/var/lib/postgresql/data
+    restart: unless-stopped
 
-  pgadmin:
-    image: dpage/pgadmin4
-    container_name: pgadmin
-    environment:
-      PGADMIN_DEFAULT_EMAIL: admin@example.com
-      PGADMIN_DEFAULT_PASSWORD: password
+  # ── Microservices ─────────────────────────────────────────────────────────────
+
+  customer-service:
+    build: ./customer
+    container_name: customer-service
     ports:
-      - "5050:80"
+      - "8081:8081"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://customer-db:5432/customerdb
+      SPRING_DATASOURCE_USERNAME: ${CUSTOMER_DB_USER:-customer}
+      SPRING_DATASOURCE_PASSWORD: ${CUSTOMER_DB_PASSWORD:-customer}
     depends_on:
-      - customer-db
-      - account-db
+      customer-db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  account-service:
+    build: ./account
+    container_name: account-service
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://account-db:5432/accountdb
+      SPRING_DATASOURCE_USERNAME: ${ACCOUNT_DB_USER:-account}
+      SPRING_DATASOURCE_PASSWORD: ${ACCOUNT_DB_PASSWORD:-account}
+      CUSTOMER_SERVICE_BASE_URL: http://customer-service:8081
+    depends_on:
+      account-db:
+        condition: service_healthy
+      customer-service:
+        condition: service_started
+    restart: unless-stopped
 
 volumes:
   customer-db-data:

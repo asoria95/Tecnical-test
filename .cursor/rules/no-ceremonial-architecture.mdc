@@ -1,0 +1,21 @@
+---
+description: Prevent over-engineering in the technical challenge
+globs:
+  - "**/*.java"
+alwaysApply: true
+---
+
+# Constraint
+This is a timed technical challenge.
+
+# Rules
+- Use architecture to improve clarity, not to impress with ceremony.
+- Do not add extra ports, adapters, wrappers, factories, or interfaces unless they improve testability or boundary clarity.
+- Prefer one clear application service per use case over deep call chains.
+- Prefer explicit code over clever code.
+- Keep microservice boundaries real and visible.
+- Keep the solution easy to explain in under 10 minutes.
+
+# Important
+A senior solution is not the most abstract solution.
+A senior solution is the clearest correct solution with sound tradeoffs.
